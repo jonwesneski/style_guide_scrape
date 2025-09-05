@@ -2,8 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import os
-import requests
 import time
+
+from rate_limit_downloader import RateLimitedDownloader
 
 
 def build_parser(driver: webdriver.Chrome, url: str) -> BeautifulSoup:
@@ -31,16 +32,19 @@ def get_images(soup: BeautifulSoup, dir_name: str, partial_url_path='shop/files'
     
     min_size_b = min_size_kb * 1024
     img_tags = soup.find_all('img')
-    for img in img_tags:
-        src = img.get('src') or img.get('data-src')
-        if src and partial_url_path in src and file_extension in src:
-        #if src and 'mercury' in src.lower():
-            src = 'https:' + src if src and src.startswith('//') else src
-            filename = src.split('/')[-1].split('?')[0]
-            img_data = requests.get(src).content
-            if len(img_data) > min_size_b:
-                with open(os.path.join(dir_name, filename), 'wb') as f:
-                    f.write(img_data)
+
+    downloader = RateLimitedDownloader(max_workers=3, rate_limit=5)
+    downloader.download_all(img_tags, partial_url_path, file_extension, dir_name, min_size_b)
+    # for img in img_tags:
+    #     src = img.get('src') or img.get('data-src')
+    #     if src and partial_url_path in src and file_extension in src:
+    #     #if src and 'mercury' in src.lower():
+    #         src = 'https:' + src if src and src.startswith('//') else src
+    #         filename = src.split('/')[-1].split('?')[0]
+    #         img_data = requests.get(src).content
+    #         if len(img_data) > min_size_b:
+    #             with open(os.path.join(dir_name, filename), 'wb') as f:
+    #                 f.write(img_data)
 
 def main(url: str, dir_name: str, partial_url_path='shop/files', min_size_kb=100, file_extension='.jpg') -> None:
     # Setup headless browser
@@ -50,8 +54,6 @@ def main(url: str, dir_name: str, partial_url_path='shop/files', min_size_kb=100
     driver = webdriver.Chrome(options=options)
 
     # Load page and parser
-    url = 'https://www.salty-crew.com/products/flagship-boardshort-dusty-olive'
-    dir_name = 'salty_crew'
     soup = build_parser(driver, url)
     
     # Create folder to store images
