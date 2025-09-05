@@ -42,7 +42,7 @@ def get_images(soup: BeautifulSoup, dir_name: str, partial_url_path='shop/files'
                 with open(os.path.join(dir_name, filename), 'wb') as f:
                     f.write(img_data)
 
-def main() -> None:
+def main(url: str, dir_name: str, partial_url_path='shop/files', min_size_kb=100, file_extension='.jpg') -> None:
     # Setup headless browser
     options = Options()
     options.headless = True
@@ -57,7 +57,7 @@ def main() -> None:
     # Create folder to store images
     os.makedirs(dir_name, exist_ok=True)
 
-    get_images(soup, dir_name, file_extension='.jpg', min_size_kb=55000)
+    get_images(soup, dir_name, partial_url_path, min_size_kb, file_extension)
     
     # Traverse through website
     # a_tags = soup.find_all('a')
@@ -72,4 +72,17 @@ def main() -> None:
     print("✅ Download complete.")
 
 if __name__ == "__main__":
-    main()
+    from ui import get_inputs
+    import sys
+
+    inputs = get_inputs()
+    try:
+        main(inputs.url,
+             inputs.output_folder,
+             inputs.image_url_sub_path,
+             int(inputs.min_image_size_kb), 
+             inputs.file_extensions)
+        sys.exit(0)
+    except Exception as e:
+        print(e)
+        sys.exit(1)

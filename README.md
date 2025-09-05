@@ -9,15 +9,7 @@ Scrape images from a website for style guide purposes
 Make sure you have Python 3.x installed on your machine. You can download it from [python.org](https://www.python.org/downloads/).
 
 ### Installation
-1. Clone the repository:
-   ```
-   git clone [repository-url]
-   ```
-2. Navigate to the project directory:
-   ```
-   cd my-python-project
-   ```
-3. Install the required packages:
+1. Install the required packages:
    ```
    pip install -r requirements.txt
    ```
