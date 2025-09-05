@@ -29,7 +29,7 @@ def download_image(img, partial_url_path, file_extension, dir_name, min_size_b):
     
 
 class RateLimitedDownloader:
-    def __init__(self, max_workers=5, rate_limit=10):  # 10 requests per second max
+    def __init__(self, max_workers=5, rate_limit=10):
         self.max_workers = max_workers
         self.rate_limit = rate_limit
         self.semaphore = asyncio.Semaphore(max_workers)
@@ -38,23 +38,21 @@ class RateLimitedDownloader:
     
     def download_with_rate_limit(self, img, partial_url_path, file_extension, dir_name, min_size_b):
         """Download with rate limiting"""
-        acquired = self.semaphore.acquire()  # 30 second timeout
+        acquired = self.semaphore.acquire()
         if not acquired:
             print("Failed to acquire semaphore within timeout!")
             return None
         try:
-            #with self.semaphore:  # Limit concurrent requests
-                # Rate limiting
-                with self.lock:
-                    current_time = time.time()
-                    time_since_last = current_time - self.last_request_time
-                    min_interval = 1.0 / self.rate_limit
-                    
-                    if time_since_last < min_interval:
-                        time.sleep(min_interval - time_since_last)
-                    
-                    self.last_request_time = time.time()
-                return download_image(img, partial_url_path, file_extension, dir_name, min_size_b)
+            with self.lock:
+                current_time = time.time()
+                time_since_last = current_time - self.last_request_time
+                min_interval = 1.0 / self.rate_limit
+                
+                if time_since_last < min_interval:
+                    time.sleep(min_interval - time_since_last)
+                
+                self.last_request_time = time.time()
+            return download_image(img, partial_url_path, file_extension, dir_name, min_size_b)
         finally:
             self.semaphore.release()
     

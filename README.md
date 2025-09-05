@@ -19,7 +19,11 @@ To run the application, execute the following command:
 ```
 python src/main.py
 ```
-TODO: Add cli parameters so you don't have to modify code
+
+### Build
+```
+python -m PyInstaller --onefile --add-data "README.md:." src/main.py
+```
 
 ## Contributing
 If you would like to contribute to this project, please fork the repository and submit a pull request.
