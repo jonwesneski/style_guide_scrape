@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Style Guide Scraper: Instructions</title>
+    </head>
+    <body>
+        <main style="max-width: 800px; margin: 0 auto;">
+            <h1>Style Guide Scraper</h1>
+            <p>A tool to scrape images on a single page of a website. This tool has config settings to run this script, the main 2 settings are:
+                <ul>
+                    <li>
+                        url: The http/https page/url you want to scrape
+                    </li>
+                    <li>
+                        output-folder: Where do you want to save the images
+                    </li>
+                </ul>
+                *The other settings will be explained towards the botom of the page
+            </p>
+
+            <h3>Instructions</h3>
+            <ol>
+                <li>
+                    Create the config:
+                    <ul>
+                        <li>
+                            Double click on the app "StyleGuideScraper" (This will create a config.ini file)<br>
+                            *If at anytime this file gets corrupted, you may delete the config.ini file and then double click on the app again
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Set the config:
+                    <ol>
+                        <li>
+                            Double click on the config.ini file to open it
+                        </li>
+                        <li>
+                            Change the url setting (change the text after the "=" sign)
+                        </li>
+                        <li>
+                            Change the output-folder setting (change the text after the "=" sign)
+                        </li>
+                        <li>
+                            Save the file
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    Run the script and wait for it to finish:
+                    <ul>
+                        <li>
+                            Double click on the app "StyleGuideScraper"
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <h3>Advanced Filter Settings</h3>
+            <p>Here are the advanced settings to help filter down to what kind of images you are looking for:
+                <ul>
+                    <li>
+                        image-url-sub-path: A common pattern is to put images into a certain path to group them together, for example:<br>
+                        https://www.mycdn.com/shop/files/flagship.jpg<br>
+                        https://www.mycdn.com/shop/files/redshirt.jpg<br>
+
+                        Both of these are inside "shop/files" at "https://www.mycdn.com"<br>
+                        If there are other images, for example:
+                        https://www.mycdn.com/common/files/mylogo.jpg<br>
+                        It will not be downloaded<br><br>
+
+                        *If you just want to grab all images you can set this setting to: /
+                    </li>
+                    <li>
+                        min-image-size-kb: Images come in all dimensions and sizes, and a website may have several images that
+                        are not "style guide" images, like a logo, some custom UI thing, or even a much smaller thumbnail
+                        of what you actually want. To help filter these out you can see what the average image size and
+                        use that as a setting here<br><br>
+                        
+                        *Also note that some sites might have bigger than expected image sizes, so you may have to increase
+                        the image size setting for those sites
+                    </li>
+                    <li>
+                        file-extensions: There are many image file extensions out there: .jpg, .jpeg, .png are some of the
+                        common ones. To filter to the ones you want you can set this. Determining the file extension
+                        is looking at the url itself and seeing what the url path ends with a "dot something", for example:<br>
+                        https://www.mycdn.com/shop/files/flagship.jpg - This one is .jpg<br>
+                        https://www.mycdn.com/shop/files/flagship.png - This one is .png<br><br>
+
+                        To grab just one type of file extension it is simply a .jpg or a .png or whatever the
+                        file extension is<br><br>
+
+                        To grab more than one type, include a comma between the different types:<br>
+                        .jpg,.png,.jpeg
+                    </li>
+                </ul>
+            </p>
+        </main>
+    </body>
+</html>
