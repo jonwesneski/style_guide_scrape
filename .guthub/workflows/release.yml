@@ -1,0 +1,80 @@
+name: Release
+
+permissions:
+  contents: write
+  pull-requests: read
+  actions: read
+  checks: write
+  id-token: write
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tag-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Next Version
+        id: semver
+        uses: ietf-tools/semver-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          fallbackTag: 0.0.0
+
+      - name: Create Tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag ${{ steps.semver.outputs.next }}
+          git tag -fa latest -m "Latest"
+          git push --force origin ${{ steps.semver.outputs.next }} latest
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Build
+        run: |
+          python -m PyInstaller --onefile --name StyleGuideScraper src/main.py
+          cp instructions.html dist/instructions.html
+        shell: bash
+
+      - name: Create zip
+        run: |
+          zip -r my_artifacts.zip dist/
+        shell: bash
+
+      - name: Upload zipped artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: my_artifacts.zip
+
+    #   - name: Create Release
+    #     uses: ncipollo/release-action
+    #     with:
+    #         allowUpdates: true
+    #         draft: false
+    #         makeLatest: true
+    #         name: ${{ steps.semver.outputs.next }}
+    #         body: Changelog
+    #         token: ${{ github.token }}
