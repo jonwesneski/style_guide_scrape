@@ -1,14 +1,16 @@
+from __future__ import annotations
 import os
 import time
+from bs4 import ResultSet, Tag, PageElement, NavigableString
 import requests
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import Lock
 
-def download_image(img, partial_url_path, file_extension, dir_name, min_size_b):
+def download_image(img: PageElement | Tag | NavigableString, partial_url_path: str, file_extension: list[str], dir_name: str, min_size_b: int):
     """Download a single image - thread-safe function"""
     src = img.get('src') or img.get('data-src')
-    if not (src and partial_url_path in src and file_extension in src):
+    if not (src and partial_url_path in src and any(x in src for x in file_extension)):
         return None
     
     src = 'https:' + src if src and src.startswith('//') else src
@@ -36,7 +38,7 @@ class RateLimitedDownloader:
         self.last_request_time = 0
         self.lock = Lock()
     
-    def download_with_rate_limit(self, img, partial_url_path, file_extension, dir_name, min_size_b):
+    def download_with_rate_limit(self, img: PageElement | Tag | NavigableString, partial_url_path: str, file_extension: list[str], dir_name: str, min_size_b: int):
         """Download with rate limiting"""
         acquired = self.semaphore.acquire()
         if not acquired:
@@ -56,7 +58,7 @@ class RateLimitedDownloader:
         finally:
             self.semaphore.release()
     
-    def download_all(self, img_tags, partial_url_path, file_extension, dir_name, min_size_b):
+    def download_all(self, img_tags: ResultSet[PageElement | Tag | NavigableString], partial_url_path: str, file_extension: list[str], dir_name: str, min_size_b: int):
         """Download all images with rate limiting"""
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             future_to_img = {

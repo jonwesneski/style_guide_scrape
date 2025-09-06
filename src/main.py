@@ -74,8 +74,12 @@ def main(url: str, dir_name: str, partial_url_path='shop/files', min_size_kb=100
     print("✅ Download complete.")
 
 if __name__ == "__main__":
-    from ui import get_inputs
     import sys
+    import urllib3
+    urllib3.disable_warnings()
+
+    from ui import get_inputs
+
 
     inputs = get_inputs()
     try:

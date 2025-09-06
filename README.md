@@ -22,7 +22,7 @@ python src/main.py
 
 ### Build
 ```
-python -m PyInstaller --onefile --add-data "README.md:." src/main.py
+python -m PyInstaller --onefile --name StyleGuideScraper src/main.py
 ```
 
 ## Contributing
