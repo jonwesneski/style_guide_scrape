@@ -14,7 +14,9 @@ allow_zero_version = false
 repo_dir = "/Users/jonwesneski/repos/style_guide_scrape"
 no_git_verify = false
 tag_format = "v{version}"
-version_toml = ["pyproject.toml:project.version"]
+version_toml = ["pyproject.toml:tool.poetry.version"]
+build_command = "pip install -e ."
+branch = "main"
 
 [tool.semantic_release.branches.main]
 match = "(main|master)"
