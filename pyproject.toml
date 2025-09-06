@@ -1,6 +1,6 @@
 [project]
 name = "style_guide_scrape"
-version = "1.0.0"  # Set this to the last released version or "0.0.0" for new projects
+version = "1.0.1"  # Set this to the last released version or "0.0.0" for new projects
 description = "A scrapping tool for style guides"
 
 [tool.semantic_release]
